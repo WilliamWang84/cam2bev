@@ -1,0 +1,301 @@
+{
+  "points": [
+    {
+      "camera": [
+        532,
+        351
+      ],
+      "bev": [
+        470,
+        31
+      ],
+      "description": "pt1"
+    },
+    {
+      "camera": [
+        432,
+        397
+      ],
+      "bev": [
+        364,
+        92
+      ],
+      "description": "pt2"
+    },
+    {
+      "camera": [
+        95,
+        631
+      ],
+      "bev": [
+        91,
+        386
+      ],
+      "description": "pt3"
+    },
+    {
+      "camera": [
+        635,
+        383
+      ],
+      "bev": [
+        509,
+        234
+      ],
+      "description": "pt4"
+    },
+    {
+      "camera": [
+        957,
+        252
+      ],
+      "bev": [
+        873,
+        72
+      ],
+      "description": "pt5"
+    },
+    {
+      "camera": [
+        994,
+        257
+      ],
+      "bev": [
+        899,
+        122
+      ],
+      "description": "pt6"
+    },
+    {
+      "camera": [
+        963,
+        283
+      ],
+      "bev": [
+        830,
+        192
+      ],
+      "description": "pt7"
+    },
+    {
+      "camera": [
+        651,
+        437
+      ],
+      "bev": [
+        477,
+        381
+      ],
+      "description": "pt8"
+    },
+    {
+      "camera": [
+        188,
+        738
+      ],
+      "bev": [
+        150,
+        607
+      ],
+      "description": "pt9"
+    },
+    {
+      "camera": [
+        1040,
+        308
+      ],
+      "bev": [
+        884,
+        283
+      ],
+      "description": "pt10"
+    },
+    {
+      "camera": [
+        187,
+        830
+      ],
+      "bev": [
+        154,
+        695
+      ],
+      "description": "pt11"
+    },
+    {
+      "camera": [
+        200,
+        910
+      ],
+      "bev": [
+        158,
+        758
+      ],
+      "description": "pt12"
+    },
+    {
+      "camera": [
+        964,
+        476
+      ],
+      "bev": [
+        590,
+        600
+      ],
+      "description": "pt13"
+    },
+    {
+      "camera": [
+        1145,
+        504
+      ],
+      "bev": [
+        637,
+        694
+      ],
+      "description": "pt14"
+    },
+    {
+      "camera": [
+        1032,
+        569
+      ],
+      "bev": [
+        555,
+        719
+      ],
+      "description": "pt15"
+    },
+    {
+      "camera": [
+        953,
+        686
+      ],
+      "bev": [
+        474,
+        787
+      ],
+      "description": "pt16"
+    },
+    {
+      "camera": [
+        885,
+        710
+      ],
+      "bev": [
+        443,
+        784
+      ],
+      "description": "pt17"
+    },
+    {
+      "camera": [
+        912,
+        863
+      ],
+      "bev": [
+        406,
+        879
+      ],
+      "description": "pt18"
+    },
+    {
+      "camera": [
+        688,
+        926
+      ],
+      "bev": [
+        331,
+        864
+      ],
+      "description": "pt19"
+    },
+    {
+      "camera": [
+        547,
+        1038
+      ],
+      "bev": [
+        275,
+        891
+      ],
+      "description": "pt20"
+    },
+    {
+      "camera": [
+        1089,
+        964
+      ],
+      "bev": [
+        425,
+        951
+      ],
+      "description": "pt21"
+    },
+    {
+      "camera": [
+        1255,
+        723
+      ],
+      "bev": [
+        546,
+        883
+      ],
+      "description": "pt22"
+    },
+    {
+      "camera": [
+        1352,
+        573
+      ],
+      "bev": [
+        660,
+        819
+      ],
+      "description": "pt23"
+    },
+    {
+      "camera": [
+        1417,
+        465
+      ],
+      "bev": [
+        783,
+        752
+      ],
+      "description": "pt24"
+    },
+    {
+      "camera": [
+        1513,
+        597
+      ],
+      "bev": [
+        759,
+        867
+      ],
+      "description": "pt25"
+    },
+    {
+      "camera": [
+        1589,
+        826
+      ],
+      "bev": [
+        588,
+        1011
+      ],
+      "description": "pt26"
+    },
+    {
+      "camera": [
+        1539,
+        1003
+      ],
+      "bev": [
+        517,
+        1045
+      ],
+      "description": "pt27"
+    }
+  ]
+}
