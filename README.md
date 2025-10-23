@@ -83,10 +83,6 @@ wangshengcom@gmail.com
 * 0.1
     * Initial Release
 
-## License
-
-This project is licensed under the [GNU GPL] License - see the LICENSE.md file for details
-
 ## Acknowledgments
 
 * [ultralytics](https://github.com/ultralytics)
