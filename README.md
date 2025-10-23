@@ -26,7 +26,7 @@ Required Libraries:
  - numpy
  - opencv-python (cv2)
  - pathlib
- - pytorch
+ - pytorch (torch)
  - scikit-learn (scipy)
  - sqlite3
  - torchvision
@@ -36,12 +36,22 @@ Required Libraries:
 
 - 1. clone this repo
 - 2. create virtual environment (strongly recommended)
-- 3. install dependencies
+- 3. install dependencies (note the cu118 after /whl, choose a version that is compatible with your GPU Driver)
+     ```
+     pip install filterpy json numpy opencv-python pathlib scikit-learn sqlite3 ultralytics
+     pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+     ```
 - 4. prepare the following files:
    - a. your camera image (with solid landmarks clearly visible) - e.g. imageA.jpg
    - b. your satellite image (with solid landmarks clearly visible) - e.g. imageB.jpg
-- 5. run calibration_tools.py to obtain calibration.json file - e.g. python calibration_tools.py calibrate imageA.jpg imageB.jpg
-- 6. run calibration_tools.py to obtain the homography matrix - e.g. python calibration_tools.py validate calibration.json imageA.jpg imageB.jpg
+- 5. run calibration_tools.py to obtain calibration.json file - e.g.
+     ```
+     python calibration_tools.py calibrate imageA.jpg imageB.jpg
+     ```
+- 6. run calibration_tools.py to obtain the homography matrix - e.g.
+     ```
+     python calibration_tools.py validate calibration.json imageA.jpg imageB.jpg
+     ```
 - 7. prepare the camera_config dictionary in bev_traffic_system.py, the dictionary should contain:
    - a. 'id' - the camera id
    - b. 'location' - a dictionary of 'lat','lon','alt' representing the floating point representations of your camera's latitude, longtitude and altitude
@@ -53,7 +63,7 @@ Required Libraries:
    - b. yolo_model_path - e.g. yolo12n.pt (ultralytics will handle the downloading of the model automatically)
    - c. calibration_file - e.g. calibration.json
    - d. camera_config - <from 7>
-   - e. enable_output - True if you like to save geojson files and tracks, false otherwise 
+   - e. enable_output - True if you like to save geojson files and tracks, False otherwise 
 
 ### Executing program
 
