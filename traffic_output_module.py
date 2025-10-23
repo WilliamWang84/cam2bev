@@ -7,7 +7,7 @@ import json
 import numpy as np
 import sqlite3
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 
@@ -151,7 +151,8 @@ class TrafficBEVOutput:
         return geojson
     
     def save_track_history(self, track_id: int, trajectory_points: List[Tuple], 
-                          vehicle_type: str, frame_numbers: List[int]):
+                        vehicle_type: str, frame_numbers: List[int],
+                        start_timestamp: Optional[datetime] = None):
         """
         Save track to database
         
@@ -160,12 +161,17 @@ class TrafficBEVOutput:
             trajectory_points: List of (bev_x, bev_y) tuples from self.trajectories[track_id]
             vehicle_type: Vehicle class name
             frame_numbers: Frame numbers for each point
+            start_timestamp: Optional timestamp of first frame (defaults to now)
         """
         if len(trajectory_points) == 0:
             return
         
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
+        
+        # Use start_timestamp or current time as base
+        if start_timestamp is None:
+            start_timestamp = datetime.utcnow()
         
         # Convert trajectory to database format
         db_trajectory = []
@@ -174,13 +180,17 @@ class TrafficBEVOutput:
         for i, (bev_x, bev_y) in enumerate(trajectory_points):
             lat, lon = self.bev_to_gps(bev_x, bev_y)
             
+            # Calculate timestamp based on frame number and FPS
+            frame_offset_seconds = frame_numbers[i] / self.video_fps
+            point_timestamp = start_timestamp + timedelta(seconds=frame_offset_seconds)
+            
             # Calculate speed from trajectory
             speed = 0.0
             heading = 0.0
             if i > 0:
                 prev_x, prev_y = trajectory_points[i-1]
-                dx = bev_x - prev_x # last frame to current frame pix difference x 
-                dy = bev_y - prev_y # last frame to current frame pix difference y
+                dx = bev_x - prev_x  # last frame to current frame pix difference x 
+                dy = bev_y - prev_y  # last frame to current frame pix difference y
                 distance_pix = np.sqrt(dx**2 + dy**2)  # Euclidean L2 distance last to current frame
                 distance_mtr = distance_pix * self.bev_meters_per_pixel
                 time_diff = (frame_numbers[i] - frame_numbers[i-1]) / self.video_fps
@@ -192,7 +202,7 @@ class TrafficBEVOutput:
             
             db_trajectory.append({
                 'track_id': track_id,
-                'timestamp': datetime.utcnow(),
+                'timestamp': point_timestamp,
                 'frame_number': frame_numbers[i] if i < len(frame_numbers) else i,
                 'bev_x': float(bev_x),
                 'bev_y': float(bev_y),
@@ -206,6 +216,7 @@ class TrafficBEVOutput:
         # Calculate statistics
         first = db_trajectory[0]
         last = db_trajectory[-1]
+
         duration = (frame_numbers[-1] - frame_numbers[0]) / self.video_fps
         avg_speed_kmh = np.mean(speeds) * 3.6 if speeds else 0.0
         distance = self._calculate_distance(db_trajectory)
@@ -235,13 +246,14 @@ class TrafficBEVOutput:
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', [
             (p['track_id'], p['timestamp'], p['frame_number'],
-             p['bev_x'], p['bev_y'], p['lat'], p['lon'],
-             p['speed_mps'], p['heading_deg'], p['confidence'])
+            p['bev_x'], p['bev_y'], p['lat'], p['lon'],
+            p['speed_mps'], p['heading_deg'], p['confidence'])
             for p in db_trajectory
         ])
         
         conn.commit()
         conn.close()
+        
     
     def _calculate_distance(self, trajectory: List[Dict]) -> float:
         """Calculate distance using Haversine"""
