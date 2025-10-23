@@ -16,16 +16,16 @@ import json
 import numpy as np
 import time
 
-from byte_tracker import ByteTracker
-from data_class import Vehicle, CalibrationPoint
-from detector import YOLODetector
-from transformer import PerspectiveTransformer
-from visualizer import BEVVisualizer
-
 from collections import defaultdict, deque
 from pathlib import Path
 from typing import List, Dict, Tuple
+
+from byte_tracker import ByteTracker
+from data_class import Vehicle, CalibrationPoint
+from detector import YOLODetector
 from traffic_output_module import TrafficBEVOutput
+from transformer import PerspectiveTransformer
+from visualizer import BEVVisualizer
 
 class TrafficBEVSystem:
     """
