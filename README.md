@@ -21,16 +21,16 @@ This project implements a Camera view (CAM) to Bird's Eye View (BEV) digital twi
 ### Dependencies
 
 Required Libraries: 
-filterpy
-json
-numpy
-opencv-python (cv2)
-pathlib
-pytorch
-scikit-learn (scipy)
-sqlite3
-torchvision
-ultralytics
+ - filterpy
+ - json
+ - numpy
+ - opencv-python (cv2)
+ - pathlib
+ - pytorch
+ - scikit-learn (scipy)
+ - sqlite3
+ - torchvision
+ - ultralytics
 
 ### Installing
 
