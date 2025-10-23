@@ -14,6 +14,7 @@ Pipeline:
 import cv2
 import json
 import numpy as np
+import time
 
 from byte_tracker import ByteTracker
 from data_class import Vehicle, CalibrationPoint
@@ -21,7 +22,7 @@ from detector import YOLODetector
 from transformer import PerspectiveTransformer
 from visualizer import BEVVisualizer
 
-from collections import defaultdict
+from collections import defaultdict, deque
 from pathlib import Path
 from typing import List, Dict, Tuple
 from traffic_output_module import TrafficBEVOutput
@@ -64,6 +65,9 @@ class TrafficBEVSystem:
                 camera_config, 
                 db_path=db_path
             )
+
+        self.frame_times = deque(maxlen=30)
+        
 
     def _finalize_lost_tracks(self, current_tracks: set, tracked_objects_old: Dict):
         """Save tracks that left the scene to database"""
@@ -157,6 +161,7 @@ class TrafficBEVSystem:
         Returns:
             camera_view, bev_view, tracked_objects
         """
+        frame_start_time = time.time()
         self.frame_count += 1
         
         # 1. Detect vehicles
@@ -182,8 +187,14 @@ class TrafficBEVSystem:
                  
                 cv2.rectangle(camera_viz, (x1, y1), (x2, y2), color, 2)
                 label = f"ID:{obj_id} {class_name}"
-                cv2.putText(camera_viz, label, (x1, y1 - 10),
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                
+                font_scale = 0.8
+                font_thickness = 2
+                (text_width, text_height), baseline = cv2.getTextSize(
+                    label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness
+                )
+                cv2.rectangle(camera_viz, (x1, y1 - text_height - baseline - 5), (x1 + text_width, y1), color, -1)
+                cv2.putText(camera_viz, label, (x1, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 255), font_thickness)
             
             # Transform to BEV
             try:
@@ -209,7 +220,8 @@ class TrafficBEVSystem:
                     bev_corners,
                     obj_id,
                     color,
-                    class_name
+                    class_name, 
+                    font_scale=1.0
                 )
                 
                 # Draw trajectory
@@ -227,8 +239,22 @@ class TrafficBEVSystem:
         self._finalize_lost_tracks(current_tracks, tracked_objects_old)
 
         self.visualizer.add_legend()
+
+        frame_time = time.time() - frame_start_time
+        self.frame_times.append(frame_time)
+        #fps = 1.0 / frame_time if frame_time > 0 else 0
+
+        avg_frame_time = sum(self.frame_times) / len(self.frame_times)
+        fps = 1.0 / avg_frame_time if avg_frame_time > 0 else 0
+
         bev_viz = self.visualizer.get_image()
+        if visualize_camera and camera_viz is not None:
+            fps_text = f"FPS: {fps:.1f}"
+            cv2.putText(camera_viz, fps_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
         
+        fps_text = f"FPS: {fps:.1f} | Frame: {self.frame_count}"
+        cv2.putText(bev_viz, fps_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)   
+
         return camera_viz, bev_viz, tracked_objects
     
     def process_video(self, 
@@ -372,7 +398,7 @@ def run():
     # Initialize system WITH output enabled
     system = TrafficBEVSystem(
         bev_image_path='imageC.png',
-        yolo_model_path='yolov8n.pt',
+        yolo_model_path='yolo12n.pt', #'yolov8n.pt', 'yolov8l.pt', 'yolov9c.pt', 'yolov9e.pt', 'yolov10n.pt', 'yolo11n.pt'
         calibration_file='calibration.json',
         camera_config=camera_config, 
         enable_output=True  

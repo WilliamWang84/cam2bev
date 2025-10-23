@@ -29,7 +29,9 @@ class BEVVisualizer:
                      vehicle_id: int = None,
                      color: Tuple[int, int, int] = (0, 255, 0),
                      class_name: str = "vehicle",
-                     size: int = 20):
+                     size: int = 20,
+                     font_scale: float = 1.0
+                     ):
         """
         Draw vehicle on BEV image
         
@@ -40,6 +42,7 @@ class BEVVisualizer:
             color: RGB color tuple
             class_name: Vehicle class name
             size: Size of marker if corners not provided
+            font_scale: Font scale for label (default 1.0)
         """
         center = (int(center[0]), int(center[1]))
         
@@ -68,14 +71,25 @@ class BEVVisualizer:
         # Draw label
         if vehicle_id is not None:
             label = f"ID:{vehicle_id} {class_name}"
-            (w, h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.4, 1)
-            cv2.rectangle(self.bev_image, 
-                         (center[0] - w//2, center[1] - 25),
-                         (center[0] + w//2, center[1] - 15),
-                         (0, 0, 0), -1)
-            cv2.putText(self.bev_image, label,
-                       (center[0] - w//2, center[1] - 18),
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
+            font_thickness = 2
+
+            (w, h), baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness)
+
+            # Draw text background
+            text_x = center[0] + 10
+            text_y = center[1] - 10
+            cv2.rectangle(self.bev_image, (text_x - 2, text_y - h - baseline), (text_x + w + 2, text_y + baseline), color, -1)
+            
+            # Draw text
+            cv2.putText(self.bev_image, label, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 255), font_thickness)
+
+            # cv2.rectangle(self.bev_image, 
+            #              (center[0] - w//2, center[1] - 25),
+            #              (center[0] + w//2, center[1] - 15),
+            #              (0, 0, 0), -1)
+            # cv2.putText(self.bev_image, label,
+            #            (center[0] - w//2, center[1] - 18),
+            #            cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
     
     def draw_trajectory(self, 
                        points: List[Tuple[int, int]], 
