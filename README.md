@@ -4,7 +4,7 @@ A Simple camera view to satellite / bird's eye view perspective transform system
 
 ## Description
 
-This project implements a Camera view (CAM) to Bird's Eye View (BEV) digital twin translation system. The system workflow is intuitive:
+This project implements a Camera view (CAM) to Bird's Eye View (BEV) transform system. The system workflow is intuitive:
   - 1. Given a camera view, and its corresponding satellite view, do the followings:
     - a. Identify / mark solid landmark points for both CAM and BEV (fixation points that do not change over time)
     - b. Perform Perspective Transform (calcualte homography matrix - H) from CAM to BEV (and optionally its inverse) using landmarks obtained from 1a.
