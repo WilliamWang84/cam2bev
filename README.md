@@ -38,7 +38,7 @@ Required Libraries:
 - 2. create virtual environment (strongly recommended)
 - 3. install dependencies (note the cu118 after /whl, choose a version that is compatible with your GPU Driver)
      ```
-     pip install filterpy json numpy opencv-python pathlib scikit-learn sqlite3 ultralytics
+     pip install filterpy numpy opencv-python pathlib scikit-learn ultralytics
      pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
      ```
 - 4. prepare the following files:
