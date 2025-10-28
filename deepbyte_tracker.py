@@ -75,7 +75,8 @@ class FeatureExtractor:
             raise ValueError(f"Model {model_name} not supported. Choose from {self.SUPPORTED_MODELS}")
         
         self.model_name = model_name
-        self.device = device if device else ('cuda' if torch.cuda.is_available() else 'cpu')
+        # Device support priority: Linux (or orchestrated docker container) | Windows (GPU / cuda) >= Mac (mps) >= Others (cpu) 
+        self.device = device if device else ('cuda' if torch.cuda.is_available() else ('mps' if torch.mps.is_available() else 'cpu'))
         
         # Load model based on selection
         if model_name == 'resnet50':

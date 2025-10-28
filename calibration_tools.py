@@ -467,6 +467,7 @@ def print_usage():
     print("  python calibration_tools.py validate <calibration.json> <camera_img> <bev_img>")
     print("  python calibration_tools.py sample")
     print("  python calibration_tools.py finetunebev <calibration.json> <x_offset> <y_offset>")
+    print("  python calibration_tools.py meter2pixel")
     sys.exit(1)
 
 
