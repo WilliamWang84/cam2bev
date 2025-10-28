@@ -20,7 +20,8 @@ from collections import defaultdict, deque
 from pathlib import Path
 from typing import List, Dict, Tuple
 
-from byte_tracker import ByteTracker
+#from byte_tracker import ByteTracker
+from deepbyte_tracker import DeepByteTracker, FeatureExtractor
 from data_class import Vehicle, CalibrationPoint
 from detector import YOLODetector
 from traffic_output_module import TrafficBEVOutput
@@ -42,7 +43,9 @@ class TrafficBEVSystem:
                  ):
         
         self.detector = YOLODetector(yolo_model_path)
-        self.tracker = ByteTracker()
+        #self.tracker = ByteTracker()
+        fe = FeatureExtractor(model_name='mobilenetv3')
+        self.tracker = DeepByteTracker(feature_extractor=fe) # by default use mobilenetv3 if feature_extractor is not supplied
         self.transformer = PerspectiveTransformer()
         self.visualizer = BEVVisualizer(bev_image_path)
         
@@ -211,7 +214,7 @@ class TrafficBEVSystem:
 
                 # Store trajectory
                 self.trajectories[obj_id].append(tuple(bev_center.astype(int)))
-                if len(self.trajectories[obj_id]) > 50:  # Keep last 50 points
+                if len(self.trajectories[obj_id]) > 100:  # Keep last 50 points
                     self.trajectories[obj_id].pop(0)
                 
                 # Draw on BEV
@@ -278,8 +281,10 @@ class TrafficBEVSystem:
         # Setup video writer
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         out = cv2.VideoWriter(output_path, fourcc, fps, 
-                             (self.visualizer.bev_image.shape[1], 
-                              self.visualizer.bev_image.shape[0]))
+                             (2793,
+                              1080)) 
+                              #self.visualizer.bev_image.shape[1],
+                              #self.visualizer.bev_image.shape[0]))
         
         frame_idx = 0
         
@@ -292,9 +297,11 @@ class TrafficBEVSystem:
             
             # Process frame
             camera_viz, bev_viz, tracked_objects = self.process_frame(frame, conf_threshold)
-            
+            bev_viz = cv2.resize(bev_viz, (873, 1080))
+            combined = np.hstack((camera_viz, bev_viz), dtype=np.uint8)
+
             # Write output
-            out.write(bev_viz)
+            out.write(combined)
             
             # Show preview
             if show_preview:

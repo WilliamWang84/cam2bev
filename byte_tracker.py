@@ -31,6 +31,7 @@ def bbox_xywh_to_xyxy(xywh: np.ndarray) -> np.ndarray:
     y2 = xywh[1] + xywh[3] / 2
     return np.array([x1, y1, x2, y2])
 
+
 class KalmanFilterTracker:
     """A Kalman Filter wrapper for a single track."""
     def __init__(self, bbox: np.ndarray):

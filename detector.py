@@ -1,9 +1,11 @@
 """
 Detector module, primarily use YOLO (ultralytics)
 """
+import cv2
 import numpy as np
 
 from typing import List, Dict
+
 
 class YOLODetector:
     """
@@ -65,12 +67,16 @@ class YOLODetector:
             # Filter for vehicles only
             if class_name in self.vehicle_classes:
                 x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
+                x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+                frame_crop = frame[y1:y2, x1:x2]
+                frame_crop = cv2.resize(frame_crop, (224, 224))
                 conf = float(box.conf[0])
                 
                 detections.append({
-                    'bbox': [int(x1), int(y1), int(x2), int(y2)],
+                    'bbox': [x1, y1, x2, y2],
                     'score': conf,
-                    'class_name': class_name
+                    'class_name': class_name,
+                    'cv_img': frame_crop
                 })
 
         return detections
