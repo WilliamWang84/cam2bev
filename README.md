@@ -22,13 +22,13 @@ This project implements a Camera view (CAM) to Bird's Eye View (BEV) transform s
 
 Required Libraries: 
  - filterpy
- - json
+ - json (part of python)
  - numpy
  - opencv-python (cv2)
  - pathlib
  - pytorch (torch)
  - scikit-learn (scipy)
- - sqlite3
+ - sqlite3 (part of python)
  - torchvision
  - ultralytics
 
@@ -82,6 +82,7 @@ wangshengcom@gmail.com
 
 * 0.1
     * Initial Release
+    * Added DeepSort
 
 ## Acknowledgments
 
