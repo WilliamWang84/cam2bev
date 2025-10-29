@@ -21,9 +21,11 @@ from pathlib import Path
 from typing import List, Dict, Tuple
 
 #from byte_tracker import ByteTracker
+#from centroid_tracker import CentroidTracker
+#from data_class import Vehicle, CalibrationPoint
 from deepbyte_tracker import DeepByteTracker, FeatureExtractor
-from data_class import Vehicle, CalibrationPoint
 from detector import YOLODetector
+#from sort_tracker import SortTracker
 from traffic_output_module import TrafficBEVOutput
 from transformer import PerspectiveTransformer
 from visualizer import BEVVisualizer
@@ -43,9 +45,12 @@ class TrafficBEVSystem:
                  ):
         
         self.detector = YOLODetector(yolo_model_path)
+        #self.tracker = CentroidTracker()
+        #self.tracker = SortTracker()
         #self.tracker = ByteTracker()
         fe = FeatureExtractor(model_name='mobilenetv3')
         self.tracker = DeepByteTracker(feature_extractor=fe) # by default use mobilenetv3 if feature_extractor is not supplied
+
         self.transformer = PerspectiveTransformer()
         self.visualizer = BEVVisualizer(bev_image_path)
         
@@ -173,7 +178,9 @@ class TrafficBEVSystem:
         
         # 2. Track vehicles
         tracked_objects, tracked_objects_old = self.tracker.update(detections)
-        
+        current_tracks = set(tracked_objects.keys())
+        self._finalize_lost_tracks(current_tracks, tracked_objects_old)
+
         # 3. Transform to BEV and visualize
         self.visualizer.reset()
         
@@ -214,7 +221,7 @@ class TrafficBEVSystem:
 
                 # Store trajectory
                 self.trajectories[obj_id].append(tuple(bev_center.astype(int)))
-                if len(self.trajectories[obj_id]) > 100:  # Keep last 50 points
+                if len(self.trajectories[obj_id]) > 2000:  # Keep last 2000 points
                     self.trajectories[obj_id].pop(0)
                 
                 # Draw on BEV
@@ -237,9 +244,6 @@ class TrafficBEVSystem:
                 # If transformation fails, skip this vehicle
                 print(f"Warning: vehicle {obj_id} tranformation failed, skipped")
                 continue
-
-        current_tracks = set(tracked_objects.keys())
-        self._finalize_lost_tracks(current_tracks, tracked_objects_old)
 
         self.visualizer.add_legend()
 

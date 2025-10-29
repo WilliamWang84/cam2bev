@@ -128,7 +128,7 @@ class ByteTracker:
                 
         return matches, list(unmatched_track_indices), list(unmatched_det_indices)
 
-    def update(self, detections: List[Dict]) -> Dict[int, Dict]:
+    def update(self, detections: List[Dict]) -> Tuple[Dict[int, Dict], Dict[int, Dict]]:
         """
         Update tracker with new detections.
         
